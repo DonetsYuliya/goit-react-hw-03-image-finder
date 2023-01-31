@@ -13,6 +13,7 @@ export class App extends Component {
     page: 1,
     loading: false,
     currentImage: null,
+    isImagesShow: false,
   };
 
   componentDidUpdate(_, prevState) {
@@ -29,6 +30,7 @@ export class App extends Component {
       const data = await getImages(search, page);
       this.setState(({ images }) => ({
         images: [...images, ...data],
+        isImagesShow: true,
       }));
     } catch (error) {
       console.log(error);
@@ -58,14 +60,14 @@ export class App extends Component {
   };
 
   render() {
-    const { images, loading, currentImage } = this.state;
+    const { images, loading, currentImage, isImagesShow } = this.state;
     const { getImages, loadMore, openModal, closeModal } = this;
     return (
       <div>
         <Searchbar onSubmit={getImages} />
-        <ImageGallery images={images} openModal={openModal} />
+        {isImagesShow && <ImageGallery images={images} openModal={openModal} />}
         {loading && <Loader />}
-        {Boolean(images.length) && (
+        {isImagesShow && !loading && (
           <Button text="Load more..." handleClick={loadMore} />
         )}
         {currentImage && (
